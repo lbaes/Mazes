@@ -1,0 +1,77 @@
+void makePathR2(int **maze, int **visits, int maze_size, int i, int j)
+{
+    clear();
+    gotoxy(0, 0);
+    print_maze(maze, maze_size);
+    wprintf(L"\n");
+    render_maze(maze, maze_size);
+    msleep(DELAY);
+
+    if (i > maze_size - 2 || i <= 0)
+        return;
+    if (j > maze_size - 2 || j <= 0)
+        return;
+    
+    visits[i][j] = 1;
+    int dir_size;
+    int dir;
+    node_t *dirs, *temp;
+    dirs = temp = NULL;
+    dirs = unvisited(visits, maze_size, i, j);
+    while ((dir_size = list_size(dirs)) > 0)
+    {
+        temp = list_at(dirs, (rand() % dir_size));
+        dir = temp->n;
+        dirs = remove_node(dirs, find(dirs, dir));
+        if (directions[dir] == N || directions[dir] == S)
+        {
+            maze[i][j] += opposite(directions[dir]);
+            maze[i + deltaY[dir]][j + deltaX[dir]] += directions[dir];
+        }
+        else
+        {
+            maze[i][j] += directions[dir];
+            maze[i + deltaY[dir]][j + deltaX[dir]] += opposite(directions[dir]);
+        }
+        makePathR2(maze, visits, maze_size, i + deltaY[dir], j + deltaX[dir]);
+    }
+}
+
+
+
+void makePath(int **maze, int **visits, int maze_size, int i, int j)
+{
+    clear();
+    gotoxy(0, 0);
+    print_maze(maze, maze_size);
+    wprintf(L"\n");
+    render_maze(maze, maze_size);
+    msleep(DELAY);
+
+    if (i > maze_size - 2 || i <= 0)
+        return;
+    if (j > maze_size - 2 || j <= 0)
+        return;
+
+    visits[i][j] = 1;
+    while (unvisited(visits, maze_size, i, j) != NULL)
+    {
+        for (unsigned int dir = 1; dir <= 4; dir++)
+        {
+            if ((visits[i + deltaY[dir]][j + deltaX[dir]]) == 0)
+            {
+                if (directions[dir] == N || directions[dir] == S)
+                {
+                    maze[i][j] += opposite(directions[dir]);
+                    maze[i + deltaY[dir]][j + deltaX[dir]] += directions[dir];
+                }
+                else
+                {
+                    maze[i][j] += directions[dir];
+                    maze[i + deltaY[dir]][j + deltaX[dir]] += opposite(directions[dir]);
+                }
+                makePath(maze, visits, maze_size, i + deltaY[dir], j + deltaX[dir]);
+            }
+        }
+    }
+}
