@@ -11,9 +11,13 @@ int test();
 
 int main(int argc, char const *argv[])
 {
+    if (argc < 2){
+        cout << "missing arguments" << endl;
+        return 1;
+    }
     MazeCell cell();
     Maze maze(atoi(argv[1]), atoi(argv[2]));
 
-    //maze.renderMaze();
+    maze.renderMaze();
     return 0;
 }
